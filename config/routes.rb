@@ -5,12 +5,15 @@ Rails.application.routes.draw do
 
   # You can have the root of your site routed with "root"
   # root 'welcome#index'
-root 'welcome#index'
+root 'users#my_portfolio'
 get "my_friends", to: "users#my_friends"
 get 'my_portfolio', to: "users#my_portfolio"
 get 'search_stocks', to: 'stocks#search'
 get 'search_friends', to: 'users#search'
+get 'search_cryptos', to: 'cryptos#search'
+
 post 'add_friend', to: 'users#add_friend'
+resources :user_cryptos, only: [:create, :destroy]
 resources :user_stocks, only: [:create, :destroy]
 resources :users, only: [:show]
 resources :friendships

@@ -9,7 +9,8 @@ class User < ActiveRecord::Base
          has_many :stocks, through: :user_stocks
          has_many :friendships
          has_many :friends, through: :friendships
-         
+         has_many :user_cryptos
+         has_many :cryptos, through: :user_cryptos
   def full_name
     return "#{first_name} #{last_name}".strip if (first_name || last_name)
     "Anonymous"
@@ -59,6 +60,20 @@ class User < ActiveRecord::Base
   
   def not_friends_with?(friend_id)
     friendships.where(friend_id: friend_id).count < 1
+  end
+  
+  def crypto_already_added?(ticker_symbol)
+    crypto = Crypto.find_by_ticker(ticker_symbol)
+    return false unless crypto
+    user_cryptos.where(crypto_id: crypto.id).exits?
+  end
+  
+  def under_crypto_limit?
+    (user_cryptos.count < 10)
+  end
+  
+  def can_add_crypto?(ticker_symbol)
+    under_crypto_limit? && !crypto_already_added?(ticker_symbol)
   end
   
 end

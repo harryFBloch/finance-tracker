@@ -1,0 +1,25 @@
+<% if params[:action] == 'search' %>
+  <div class = "results-block">
+     <%= bootstrap_flash %>
+  </div>
+<% end %>
+<% if @crypto  %>
+  <div class = "well results-block">
+    <strong>Symbol: </strong><%= @crypto.ticker%>
+    <strong>Price: </strong><%= @crypto.last_price%>
+    <% if current_user.can_add_crypto?(@crypto.ticker) %>
+    <%= link_to "Add To My Cryptos", user_cryptos_path(user: current_user, crypto_ticker: @crypto.ticker),
+      class: "btn btn-xs btn-success", method: :post %>
+    <% else %>
+      <span class = 'label label-default'>
+          Crypto cannot be added because you have already added
+        <% if !current_user.under_crypto_limit? %>
+          10 Cryptos
+        <% end %> 
+        <% if current_user.crypto_already_added?(@crypto.ticker) %>
+          this crypto
+        <% end %>
+      </span>
+    <% end %>
+  </div>
+<% end %>
